@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI购物助手 - 智能问答</title>
+  <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+  <div class="chat-container">
+    <!-- 头部 -->
+    <header class="chat-header">
+      <button class="back-btn" id="backBtn">←</button>
+      <div class="header-title">
+        <span class="ai-avatar">🤖</span>
+        <span>AI购物顾问</span>
+      </div>
+      <button class="menu-btn" id="menuBtn">⋮</button>
+    </header>
+
+    <!-- 商品上下文 -->
+    <div id="product-context" class="product-context hidden">
+      <div class="context-label">当前商品:</div>
+      <div class="context-product">
+        <img id="context-image" src="" alt="">
+        <div class="context-info">
+          <div id="context-title" class="context-title"></div>
+          <div id="context-price" class="context-price"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 聊天消息区 -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- 欢迎消息 -->
+      <div class="message ai">
+        <div class="avatar">🤖</div>
+        <div class="content">
+          <p>你好！我是AI购物顾问，可以帮你：</p>
+          <ul>
+            <li>🔍 分析商品是否值得买</li>
+            <li>💡 推荐合适的商品</li>
+            <li>⏰ 判断最佳购买时机</li>
+            <li>📊 对比不同商品</li>
+          </ul>
+          <p>有什么可以帮你的？</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 快捷问题 -->
+    <div class="quick-questions" id="quickQuestions">
+      <button class="quick-btn" data-question="现在买划算吗？">现在买划算吗？</button>
+      <button class="quick-btn" data-question="什么时候会降价？">什么时候降价？</button>
+      <button class="quick-btn" data-question="这款质量怎么样？">质量怎么样？</button>
+      <button class="quick-btn" data-question="有更便宜的推荐吗？">有更便宜的吗？</button>
+    </div>
+
+    <!-- 输入区 -->
+    <div class="chat-input-area">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          id="messageInput"
+          placeholder="问我任何购物相关的问题..."
+          autocomplete="off"
+        >
+        <button class="voice-btn" id="voiceBtn" title="语音输入">🎤</button>
+      </div>
+      <button class="send-btn" id="sendBtn">发送</button>
+    </div>
+
+    <!-- 功能面板 -->
+    <div class="feature-panel hidden" id="featurePanel">
+      <div class="panel-header">
+        <span>更多功能</span>
+        <button class="close-panel" id="closePanelBtn">×</button>
+      </div>
+      <div class="feature-grid">
+        <button class="feature-item" data-feature="compare">
+          <span class="feature-icon">📊</span>
+          <span>商品对比</span>
+        </button>
+        <button class="feature-item" data-feature="predict">
+          <span class="feature-icon">📈</span>
+          <span>价格预测</span>
+        </button>
+        <button class="feature-item" data-feature="budget">
+          <span class="feature-icon">💰</span>
+          <span>预算管理</span>
+        </button>
+        <button class="feature-item" data-feature="calendar">
+          <span class="feature-icon">📅</span>
+          <span>大促日历</span>
+        </button>
+        <button class="feature-item" data-feature="optimize">
+          <span class="feature-icon">🛒</span>
+          <span>凑单优化</span>
+        </button>
+        <button class="feature-item" data-feature="recommend">
+          <span class="feature-icon">✨</span>
+          <span>个性推荐</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="chat.js" type="module"></script>
+</body>
+</html>
