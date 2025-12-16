@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>欢迎使用 AI购物助手</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+      background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 40px 20px;
+    }
+
+    .logo {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .features {
+      padding: 20px 40px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .feature:last-child {
+      border-bottom: none;
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff5f0;
+      border-radius: 12px;
+    }
+
+    .feature-content h3 {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .feature-content p {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    .footer {
+      padding: 30px 40px;
+      background: #fafafa;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 40px;
+      background: linear-gradient(135deg, #ff6b35, #e55a2b);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+    }
+
+    .tips {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #999;
+    }
+
+    .tips a {
+      color: #ff6b35;
+      text-decoration: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      animation: fadeIn 0.6s ease;
+    }
+
+    .feature {
+      animation: fadeIn 0.6s ease;
+      animation-fill-mode: both;
+    }
+
+    .feature:nth-child(1) { animation-delay: 0.1s; }
+    .feature:nth-child(2) { animation-delay: 0.2s; }
+    .feature:nth-child(3) { animation-delay: 0.3s; }
+    .feature:nth-child(4) { animation-delay: 0.4s; }
+    .feature:nth-child(5) { animation-delay: 0.5s; }
+    .feature:nth-child(6) { animation-delay: 0.6s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🛒</div>
+      <h1>欢迎使用 AI购物助手</h1>
+      <p class="subtitle">智能全网比价，让购物更省心</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-content">
+          <h3>全网比价</h3>
+          <p>一键对比淘宝、京东、拼多多等平台价格，找到最优惠的购买渠道</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">📈</div>
+        <div class="feature-content">
+          <h3>价格追踪</h3>
+          <p>查看商品30/60/90天价格走势，判断当前是否为入手好时机</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-content">
+          <h3>降价提醒</h3>
+          <p>设置目标价格，商品降价时自动通知您，不错过任何优惠</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-content">
+          <h3>AI智能分析</h3>
+          <p>分析用户评论情感，识别刷单，给出购买建议</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🎫</div>
+        <div class="feature-content">
+          <h3>优惠券聚合</h3>
+          <p>自动搜索并显示可用优惠券，帮您省更多</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">📷</div>
+        <div class="feature-content">
+          <h3>以图搜商品</h3>
+          <p>拍照或截图即可搜索同款商品，快速找到更低价格</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="#" class="btn" id="startBtn">开始使用</a>
+      <p class="tips">
+        点击浏览器工具栏的 🛒 图标开始比价<br>
+        <a href="options.html">设置</a> | <a href="#">使用帮助</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('startBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      // 打开淘宝作为示例
+      window.open('https://www.taobao.com', '_blank');
+      // 关闭欢迎页
+      setTimeout(() => window.close(), 500);
+    });
+  </script>
+</body>
+</html>

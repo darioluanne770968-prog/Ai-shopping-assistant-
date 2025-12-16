@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI购物助手 - 设置</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">AI购物助手</span>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#general" class="nav-item active" data-section="general">
+          <span class="nav-icon">⚙️</span>
+          <span>通用设置</span>
+        </a>
+        <a href="#platforms" class="nav-item" data-section="platforms">
+          <span class="nav-icon">🏪</span>
+          <span>平台管理</span>
+        </a>
+        <a href="#notifications" class="nav-item" data-section="notifications">
+          <span class="nav-icon">🔔</span>
+          <span>通知设置</span>
+        </a>
+        <a href="#data" class="nav-item" data-section="data">
+          <span class="nav-icon">💾</span>
+          <span>数据管理</span>
+        </a>
+        <a href="#about" class="nav-item" data-section="about">
+          <span class="nav-icon">ℹ️</span>
+          <span>关于</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="version">版本 1.0.0</span>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 通用设置 -->
+      <section id="general" class="section active">
+        <h2>通用设置</h2>
+
+        <div class="setting-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>自动比价</h3>
+              <p>打开商品页面时自动进行比价</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="autoCompare" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>显示悬浮面板</h3>
+              <p>在商品页面显示悬浮比价窗口</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="showFloatingPanel" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>价格检查频率</h3>
+              <p>自动检查心愿单商品价格的间隔</p>
+            </div>
+            <select id="priceCheckInterval" class="select">
+              <option value="30">每30分钟</option>
+              <option value="60" selected>每小时</option>
+              <option value="180">每3小时</option>
+              <option value="360">每6小时</option>
+              <option value="720">每12小时</option>
+              <option value="1440">每天</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>主题</h3>
+              <p>选择界面主题</p>
+            </div>
+            <select id="theme" class="select">
+              <option value="light">浅色</option>
+              <option value="dark">深色</option>
+              <option value="auto">跟随系统</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 平台管理 -->
+      <section id="platforms" class="section">
+        <h2>平台管理</h2>
+        <p class="section-desc">选择要启用的购物平台进行比价</p>
+
+        <div class="platform-grid">
+          <div class="platform-item">
+            <input type="checkbox" id="platform-taobao" checked>
+            <label for="platform-taobao">
+              <span class="platform-icon" style="background: #ff5000">淘</span>
+              <span class="platform-name">淘宝</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-tmall" checked>
+            <label for="platform-tmall">
+              <span class="platform-icon" style="background: #ff0036">猫</span>
+              <span class="platform-name">天猫</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-jd" checked>
+            <label for="platform-jd">
+              <span class="platform-icon" style="background: #e1251b">京</span>
+              <span class="platform-name">京东</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-pdd" checked>
+            <label for="platform-pdd">
+              <span class="platform-icon" style="background: #e02e24">拼</span>
+              <span class="platform-name">拼多多</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-suning" checked>
+            <label for="platform-suning">
+              <span class="platform-icon" style="background: #f68b1e">苏</span>
+              <span class="platform-name">苏宁</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-vipshop" checked>
+            <label for="platform-vipshop">
+              <span class="platform-icon" style="background: #ff3192">唯</span>
+              <span class="platform-name">唯品会</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-amazon">
+            <label for="platform-amazon">
+              <span class="platform-icon" style="background: #ff9900">亚</span>
+              <span class="platform-name">亚马逊</span>
+            </label>
+          </div>
+
+          <div class="platform-item">
+            <input type="checkbox" id="platform-dangdang">
+            <label for="platform-dangdang">
+              <span class="platform-icon" style="background: #e03b2b">当</span>
+              <span class="platform-name">当当</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 通知设置 -->
+      <section id="notifications" class="section">
+        <h2>通知设置</h2>
+
+        <div class="setting-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>启用通知</h3>
+              <p>接收降价提醒和其他通知</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="notificationsEnabled" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>降价通知</h3>
+              <p>心愿单商品降价时通知</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="priceDropNotify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>目标价格达成</h3>
+              <p>价格达到设定目标时通知</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="targetPriceNotify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>优惠券提醒</h3>
+              <p>发现可用优惠券时通知</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="couponNotify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>通知声音</h3>
+              <p>通知时播放提示音</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="notificationSound">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 数据管理 -->
+      <section id="data" class="section">
+        <h2>数据管理</h2>
+
+        <div class="data-stats">
+          <div class="stat-card">
+            <span class="stat-value" id="wishlistCount">0</span>
+            <span class="stat-label">心愿单商品</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="alertsCount">0</span>
+            <span class="stat-label">降价提醒</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="totalSaved">¥0</span>
+            <span class="stat-label">累计节省</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="comparisons">0</span>
+            <span class="stat-label">比价次数</span>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>导出数据</h3>
+              <p>将心愿单、提醒等数据导出为文件</p>
+            </div>
+            <button class="btn btn-secondary" id="exportDataBtn">导出</button>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3>导入数据</h3>
+              <p>从文件导入数据</p>
+            </div>
+            <button class="btn btn-secondary" id="importDataBtn">导入</button>
+            <input type="file" id="importInput" accept=".json" hidden>
+          </div>
+
+          <div class="setting-item danger">
+            <div class="setting-info">
+              <h3>清除所有数据</h3>
+              <p>删除所有本地数据，此操作不可恢复</p>
+            </div>
+            <button class="btn btn-danger" id="clearDataBtn">清除</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 关于 -->
+      <section id="about" class="section">
+        <h2>关于</h2>
+
+        <div class="about-card">
+          <div class="about-logo">
+            <span>🛒</span>
+          </div>
+          <h3>AI购物助手</h3>
+          <p class="version-info">版本 1.0.0</p>
+          <p class="about-desc">
+            智能全网比价工具，帮助您找到最优惠的价格。
+            支持淘宝、天猫、京东、拼多多等主流电商平台。
+          </p>
+        </div>
+
+        <div class="feature-list">
+          <h4>主要功能</h4>
+          <ul>
+            <li>🔍 全网比价 - 一键对比多平台价格</li>
+            <li>📈 价格追踪 - 查看商品历史价格走势</li>
+            <li>🔔 降价提醒 - 价格达到目标时通知</li>
+            <li>🤖 AI分析 - 智能评论分析和购买建议</li>
+            <li>🎫 优惠券聚合 - 自动搜索可用优惠券</li>
+            <li>📷 以图搜商品 - 拍照或截图搜索同款</li>
+          </ul>
+        </div>
+
+        <div class="links">
+          <a href="https://github.com/darioluanne770968-prog/Ai-shopping-assistant-" target="_blank" class="link">
+            <span>📦</span> GitHub
+          </a>
+          <a href="#" class="link">
+            <span>📝</span> 使用说明
+          </a>
+          <a href="#" class="link">
+            <span>💬</span> 反馈建议
+          </a>
+          <a href="#" class="link">
+            <span>⭐</span> 给个好评
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="options.js" type="module"></script>
+</body>
+</html>

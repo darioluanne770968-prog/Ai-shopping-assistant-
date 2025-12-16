@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI购物助手</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">AI购物助手</span>
+      </div>
+      <div class="header-actions">
+        <button id="settingsBtn" class="icon-btn" title="设置">⚙️</button>
+      </div>
+    </header>
+
+    <!-- 导航标签 -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="compare">比价</button>
+      <button class="tab" data-tab="analysis">AI分析</button>
+      <button class="tab" data-tab="wishlist">心愿单</button>
+      <button class="tab" data-tab="alerts">提醒</button>
+    </nav>
+
+    <!-- 比价面板 -->
+    <div id="compare-panel" class="panel active">
+      <!-- 当前商品信息 -->
+      <div id="current-product" class="product-card">
+        <div class="loading-placeholder">
+          <div class="spinner"></div>
+          <p>正在识别商品...</p>
+        </div>
+      </div>
+
+      <!-- 比价结果 -->
+      <div id="price-comparison" class="comparison-section">
+        <h3>📊 全网比价</h3>
+        <div id="price-list" class="price-list">
+          <!-- 动态加载 -->
+        </div>
+      </div>
+
+      <!-- 历史价格 -->
+      <div id="price-history" class="history-section">
+        <h3>📈 价格走势</h3>
+        <div class="chart-container">
+          <canvas id="priceChart"></canvas>
+        </div>
+        <div class="history-stats">
+          <div class="stat">
+            <span class="stat-label">历史最低</span>
+            <span id="lowest-price" class="stat-value">--</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">历史最高</span>
+            <span id="highest-price" class="stat-value">--</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">平均价格</span>
+            <span id="avg-price" class="stat-value">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 优惠券 -->
+      <div id="coupons-section" class="coupons-section">
+        <h3>🎫 可用优惠券</h3>
+        <div id="coupon-list" class="coupon-list">
+          <!-- 动态加载 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- AI分析面板 -->
+    <div id="analysis-panel" class="panel">
+      <!-- AI购买建议 -->
+      <div class="ai-suggestion">
+        <h3>🤖 AI购买建议</h3>
+        <div id="buy-suggestion" class="suggestion-content">
+          <div class="loading-placeholder">
+            <div class="spinner"></div>
+            <p>AI正在分析...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 评论分析 -->
+      <div class="review-analysis">
+        <h3>💬 评论情感分析</h3>
+        <div id="sentiment-chart" class="sentiment-container">
+          <div class="sentiment-bar">
+            <div class="positive" style="width: 0%"></div>
+            <div class="neutral" style="width: 0%"></div>
+            <div class="negative" style="width: 0%"></div>
+          </div>
+          <div class="sentiment-labels">
+            <span class="positive-label">好评 <span id="positive-pct">0%</span></span>
+            <span class="neutral-label">中评 <span id="neutral-pct">0%</span></span>
+            <span class="negative-label">差评 <span id="negative-pct">0%</span></span>
+          </div>
+        </div>
+        <div id="fake-review-warning" class="warning hidden">
+          ⚠️ 检测到可能存在刷单评论
+        </div>
+      </div>
+
+      <!-- 优缺点总结 -->
+      <div class="pros-cons">
+        <h3>📝 优缺点总结</h3>
+        <div class="pros-cons-grid">
+          <div class="pros">
+            <h4>✅ 优点</h4>
+            <ul id="pros-list">
+              <!-- 动态加载 -->
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 缺点</h4>
+            <ul id="cons-list">
+              <!-- 动态加载 -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 店铺信誉分析 -->
+      <div class="shop-analysis">
+        <h3>🏪 店铺可信度</h3>
+        <div id="shop-trust" class="trust-meter">
+          <div class="trust-bar">
+            <div class="trust-fill" style="width: 0%"></div>
+          </div>
+          <div class="trust-info">
+            <span id="trust-score">--</span>
+            <span id="trust-level">分析中...</span>
+          </div>
+        </div>
+        <ul id="shop-warnings" class="shop-warnings">
+          <!-- 动态加载 -->
+        </ul>
+      </div>
+
+      <!-- 相似商品推荐 -->
+      <div class="similar-products">
+        <h3>🔄 相似商品推荐</h3>
+        <div id="similar-list" class="similar-list">
+          <!-- 动态加载 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 心愿单面板 -->
+    <div id="wishlist-panel" class="panel">
+      <div class="wishlist-header">
+        <h3>❤️ 我的心愿单</h3>
+        <span id="wishlist-count" class="badge">0</span>
+      </div>
+      <div id="wishlist-items" class="wishlist-items">
+        <div class="empty-state">
+          <span class="empty-icon">📋</span>
+          <p>心愿单是空的</p>
+          <p class="empty-hint">浏览商品时点击 ❤️ 添加</p>
+        </div>
+      </div>
+      <div class="wishlist-stats">
+        <div class="stat">
+          <span class="stat-label">累计省钱</span>
+          <span id="total-saved" class="stat-value highlight">¥0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 提醒面板 -->
+    <div id="alerts-panel" class="panel">
+      <div class="alerts-header">
+        <h3>🔔 降价提醒</h3>
+        <button id="addAlertBtn" class="btn-primary">+ 添加提醒</button>
+      </div>
+      <div id="alerts-list" class="alerts-list">
+        <div class="empty-state">
+          <span class="empty-icon">🔕</span>
+          <p>暂无降价提醒</p>
+          <p class="empty-hint">设置目标价格，降价时通知您</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加提醒弹窗 -->
+    <div id="alert-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>设置降价提醒</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>商品名称</label>
+            <input type="text" id="alert-product-name" readonly>
+          </div>
+          <div class="form-group">
+            <label>当前价格</label>
+            <input type="text" id="alert-current-price" readonly>
+          </div>
+          <div class="form-group">
+            <label>目标价格</label>
+            <input type="number" id="alert-target-price" placeholder="输入期望价格">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelAlertBtn" class="btn-secondary">取消</button>
+          <button id="saveAlertBtn" class="btn-primary">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 以图搜商品 -->
+    <div class="image-search-section">
+      <button id="imageSearchBtn" class="image-search-btn">
+        📷 以图搜商品
+      </button>
+      <input type="file" id="imageInput" accept="image/*" hidden>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <footer class="footer">
+      <button id="addToWishlistBtn" class="action-btn">
+        <span class="btn-icon">❤️</span>
+        <span>收藏</span>
+      </button>
+      <button id="setAlertBtn" class="action-btn">
+        <span class="btn-icon">🔔</span>
+        <span>提醒</span>
+      </button>
+      <button id="shareBtn" class="action-btn">
+        <span class="btn-icon">📤</span>
+        <span>分享</span>
+      </button>
+      <button id="compareBtn" class="action-btn primary">
+        <span class="btn-icon">⚡</span>
+        <span>立即比价</span>
+      </button>
+    </footer>
+  </div>
+
+  <script src="../lib/chart.min.js"></script>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

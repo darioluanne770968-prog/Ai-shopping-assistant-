@@ -1,0 +1,79 @@
+{
+  "manifest_version": 3,
+  "name": "AI购物助手 - 全网比价",
+  "version": "1.0.0",
+  "description": "智能全网比价、AI分析评论、降价提醒、优惠券聚合",
+  "author": "AI Shopping Assistant Team",
+  "homepage_url": "https://github.com/darioluanne770968-prog/Ai-shopping-assistant-",
+
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    },
+    "default_title": "AI购物助手"
+  },
+
+  "background": {
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.taobao.com/*",
+        "*://*.tmall.com/*",
+        "*://*.jd.com/*",
+        "*://*.pinduoduo.com/*",
+        "*://*.suning.com/*",
+        "*://*.vip.com/*",
+        "*://*.amazon.cn/*",
+        "*://*.dangdang.com/*"
+      ],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications",
+    "activeTab",
+    "contextMenus",
+    "clipboardRead",
+    "clipboardWrite"
+  ],
+
+  "host_permissions": [
+    "*://*.taobao.com/*",
+    "*://*.tmall.com/*",
+    "*://*.jd.com/*",
+    "*://*.pinduoduo.com/*",
+    "*://*.suning.com/*",
+    "*://*.vip.com/*",
+    "*://*.amazon.cn/*",
+    "*://*.dangdang.com/*"
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "content/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "options_page": "options/options.html"
+}
