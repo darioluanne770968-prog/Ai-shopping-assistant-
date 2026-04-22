@@ -8,6 +8,7 @@ import { SalesCalendar } from '../modules/sales-calendar.js';
 import { ProductComparator } from '../modules/product-comparator.js';
 import { RecommendationEngine } from '../modules/recommendation-engine.js';
 import { StorageManager } from '../modules/storage.js';
+import { escapeHtml } from '../modules/utils.js';
 
 class ChatInterface {
   constructor() {
@@ -110,15 +111,17 @@ class ChatInterface {
   updateQuickQuestions() {
     const questions = this.aiChat.getQuickQuestions();
     const container = document.getElementById('quickQuestions');
+    container.textContent = '';
 
-    container.innerHTML = questions.map(q =>
-      `<button class="quick-btn" data-question="${q}">${q}</button>`
-    ).join('');
-
-    container.querySelectorAll('.quick-btn').forEach(btn => {
+    questions.forEach(q => {
+      const btn = document.createElement('button');
+      btn.className = 'quick-btn';
+      btn.dataset.question = q;
+      btn.textContent = q;
       btn.addEventListener('click', () => {
         this.sendMessage(btn.dataset.question);
       });
+      container.appendChild(btn);
     });
   }
 
@@ -158,7 +161,7 @@ class ChatInterface {
     }
   }
 
-  // 添加消息
+  // 添加消息（安全方式）
   addMessage(text, sender, type = '', data = null) {
     const container = document.getElementById('chatMessages');
 
@@ -167,10 +170,17 @@ class ChatInterface {
 
     const avatar = sender === 'ai' ? '🤖' : '👤';
 
-    messageEl.innerHTML = `
-      <div class="avatar">${avatar}</div>
-      <div class="content ${type}">${this.formatMessage(text)}</div>
-    `;
+    // 创建头像
+    const avatarEl = document.createElement('div');
+    avatarEl.className = 'avatar';
+    avatarEl.textContent = avatar;
+    messageEl.appendChild(avatarEl);
+
+    // 创建内容
+    const contentEl = document.createElement('div');
+    contentEl.className = `content ${type}`;
+    contentEl.innerHTML = this.formatMessage(escapeHtml(text));
+    messageEl.appendChild(contentEl);
 
     container.appendChild(messageEl);
     container.scrollTop = container.scrollHeight;
@@ -178,8 +188,10 @@ class ChatInterface {
 
   // 格式化消息
   formatMessage(text) {
-    // 将换行转为<br>
-    return text.replace(/\n/g, '<br>');
+    // 将换行转为<br>，**text** 转为 <strong>
+    return text
+      .replace(/\n/g, '<br>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   }
 
   // 显示正在输入
@@ -190,14 +202,24 @@ class ChatInterface {
     const typingEl = document.createElement('div');
     typingEl.className = 'message ai';
     typingEl.id = 'typing-message';
-    typingEl.innerHTML = `
-      <div class="avatar">🤖</div>
-      <div class="content">
-        <div class="typing-indicator">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-    `;
+
+    // 创建头像
+    const avatarEl = document.createElement('div');
+    avatarEl.className = 'avatar';
+    avatarEl.textContent = '🤖';
+    typingEl.appendChild(avatarEl);
+
+    // 创建内容
+    const contentEl = document.createElement('div');
+    contentEl.className = 'content';
+
+    const indicatorEl = document.createElement('div');
+    indicatorEl.className = 'typing-indicator';
+    for (let i = 0; i < 3; i++) {
+      indicatorEl.appendChild(document.createElement('span'));
+    }
+    contentEl.appendChild(indicatorEl);
+    typingEl.appendChild(contentEl);
 
     container.appendChild(typingEl);
     container.scrollTop = container.scrollHeight;
@@ -210,41 +232,66 @@ class ChatInterface {
     if (typingEl) typingEl.remove();
   }
 
-  // 显示推荐卡片
+  // 显示推荐卡片（安全方式）
   showRecommendationCards(recommendations) {
     const container = document.getElementById('chatMessages');
 
     const cardsEl = document.createElement('div');
     cardsEl.className = 'message ai';
-    cardsEl.innerHTML = `
-      <div class="avatar">🤖</div>
-      <div class="content">
-        <div class="recommendation-cards">
-          ${recommendations.map(rec => `
-            <div class="rec-card" data-url="${rec.url || '#'}">
-              <img src="${rec.image || 'https://via.placeholder.com/100'}" alt="">
-              <div class="rec-card-info">
-                <div class="rec-card-title">${rec.title}</div>
-                <div class="rec-card-price">¥${rec.price}</div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
 
-    container.appendChild(cardsEl);
-    container.scrollTop = container.scrollHeight;
+    // 创建头像
+    const avatarEl = document.createElement('div');
+    avatarEl.className = 'avatar';
+    avatarEl.textContent = '🤖';
+    cardsEl.appendChild(avatarEl);
 
-    // 绑定点击事件
-    cardsEl.querySelectorAll('.rec-card').forEach(card => {
+    // 创建内容
+    const contentEl = document.createElement('div');
+    contentEl.className = 'content';
+
+    const cardsContainer = document.createElement('div');
+    cardsContainer.className = 'recommendation-cards';
+
+    recommendations.forEach(rec => {
+      const card = document.createElement('div');
+      card.className = 'rec-card';
+      card.dataset.url = rec.url || '#';
+
+      const img = document.createElement('img');
+      img.src = rec.image || 'https://via.placeholder.com/100';
+      img.alt = '';
+      card.appendChild(img);
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'rec-card-info';
+
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'rec-card-title';
+      titleDiv.textContent = rec.title;
+      infoDiv.appendChild(titleDiv);
+
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'rec-card-price';
+      priceDiv.textContent = `¥${rec.price}`;
+      infoDiv.appendChild(priceDiv);
+
+      card.appendChild(infoDiv);
+
       card.addEventListener('click', () => {
         const url = card.dataset.url;
         if (url && url !== '#') {
           chrome.tabs.create({ url });
         }
       });
+
+      cardsContainer.appendChild(card);
     });
+
+    contentEl.appendChild(cardsContainer);
+    cardsEl.appendChild(contentEl);
+
+    container.appendChild(cardsEl);
+    container.scrollTop = container.scrollHeight;
   }
 
   // 切换功能面板

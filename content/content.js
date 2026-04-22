@@ -3,6 +3,19 @@
  * 注入到购物网站，识别商品信息并显示悬浮比价窗口
  */
 
+/**
+ * 转义 HTML 特殊字符，防止 XSS 攻击
+ * @param {string} str - 需要转义的字符串
+ * @returns {string} 转义后的安全字符串
+ */
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  const text = String(str);
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 class ShoppingAssistant {
   constructor() {
     this.currentProduct = null;
@@ -280,7 +293,7 @@ class ShoppingAssistant {
     // 创建面板容器
     this.floatingPanel = document.createElement('div');
     this.floatingPanel.id = 'ai-shopping-assistant-panel';
-    this.floatingPanel.innerHTML = this.getFloatingPanelHTML();
+    this.floatingPanel.appendChild(this.createFloatingPanelDOM());
 
     document.body.appendChild(this.floatingPanel);
 
@@ -291,93 +304,116 @@ class ShoppingAssistant {
     this.loadComparisonData();
   }
 
-  // 获取悬浮面板HTML
-  getFloatingPanelHTML() {
-    return `
-      <div class="asa-panel">
-        <div class="asa-panel-header">
-          <div class="asa-logo">
-            <span class="asa-icon">🛒</span>
-            <span class="asa-title">AI购物助手</span>
-          </div>
-          <div class="asa-actions">
-            <button class="asa-btn-minimize" title="最小化">−</button>
-            <button class="asa-btn-close" title="关闭">×</button>
-          </div>
-        </div>
+  // 创建悬浮面板DOM（安全方式）
+  createFloatingPanelDOM() {
+    const price = escapeHtml(this.currentProduct?.price || '--');
 
-        <div class="asa-panel-body">
-          <!-- 价格概览 -->
-          <div class="asa-price-overview">
-            <div class="asa-current-price">
-              <span class="asa-label">当前价格</span>
-              <span class="asa-value">¥${this.currentProduct?.price || '--'}</span>
-            </div>
-            <div class="asa-best-price">
-              <span class="asa-label">全网最低</span>
-              <span class="asa-value loading">查询中...</span>
-            </div>
-          </div>
+    const fragment = document.createDocumentFragment();
 
-          <!-- 价格走势指示器 -->
-          <div class="asa-price-indicator">
-            <div class="asa-indicator-bar">
-              <div class="asa-indicator-fill" style="width: 50%"></div>
-              <div class="asa-indicator-marker" style="left: 50%"></div>
-            </div>
-            <div class="asa-indicator-labels">
-              <span>历史最低</span>
-              <span>历史最高</span>
-            </div>
-          </div>
+    // 主面板
+    const panel = document.createElement('div');
+    panel.className = 'asa-panel';
 
-          <!-- 比价列表 -->
-          <div class="asa-comparison-list">
-            <div class="asa-loading">
-              <div class="asa-spinner"></div>
-              <span>正在全网搜索...</span>
-            </div>
-          </div>
-
-          <!-- AI建议 -->
-          <div class="asa-ai-suggestion">
-            <div class="asa-suggestion-icon">🤖</div>
-            <div class="asa-suggestion-text">AI正在分析...</div>
-          </div>
-
-          <!-- 快捷操作 -->
-          <div class="asa-quick-actions">
-            <button class="asa-action-btn" data-action="wishlist">
-              <span>❤️</span>
-              <span>收藏</span>
-            </button>
-            <button class="asa-action-btn" data-action="alert">
-              <span>🔔</span>
-              <span>降价提醒</span>
-            </button>
-            <button class="asa-action-btn" data-action="history">
-              <span>📈</span>
-              <span>价格历史</span>
-            </button>
-            <button class="asa-action-btn" data-action="share">
-              <span>📤</span>
-              <span>分享</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="asa-panel-footer">
-          <span class="asa-update-time">刚刚更新</span>
-          <button class="asa-refresh-btn">🔄 刷新</button>
-        </div>
+    // 头部
+    const header = document.createElement('div');
+    header.className = 'asa-panel-header';
+    header.innerHTML = `
+      <div class="asa-logo">
+        <span class="asa-icon">🛒</span>
+        <span class="asa-title">AI购物助手</span>
       </div>
-
-      <!-- 最小化状态 -->
-      <div class="asa-minimized">
-        <span class="asa-mini-icon">🛒</span>
-        <span class="asa-mini-price">¥${this.currentProduct?.price || '--'}</span>
+      <div class="asa-actions">
+        <button class="asa-btn-minimize" title="最小化">−</button>
+        <button class="asa-btn-close" title="关闭">×</button>
       </div>
     `;
+    panel.appendChild(header);
+
+    // 主体
+    const body = document.createElement('div');
+    body.className = 'asa-panel-body';
+    body.innerHTML = `
+      <!-- 价格概览 -->
+      <div class="asa-price-overview">
+        <div class="asa-current-price">
+          <span class="asa-label">当前价格</span>
+          <span class="asa-value">¥${price}</span>
+        </div>
+        <div class="asa-best-price">
+          <span class="asa-label">全网最低</span>
+          <span class="asa-value loading">查询中...</span>
+        </div>
+      </div>
+
+      <!-- 价格走势指示器 -->
+      <div class="asa-price-indicator">
+        <div class="asa-indicator-bar">
+          <div class="asa-indicator-fill" style="width: 50%"></div>
+          <div class="asa-indicator-marker" style="left: 50%"></div>
+        </div>
+        <div class="asa-indicator-labels">
+          <span>历史最低</span>
+          <span>历史最高</span>
+        </div>
+      </div>
+
+      <!-- 比价列表 -->
+      <div class="asa-comparison-list">
+        <div class="asa-loading">
+          <div class="asa-spinner"></div>
+          <span>正在全网搜索...</span>
+        </div>
+      </div>
+
+      <!-- AI建议 -->
+      <div class="asa-ai-suggestion">
+        <div class="asa-suggestion-icon">🤖</div>
+        <div class="asa-suggestion-text">AI正在分析...</div>
+      </div>
+
+      <!-- 快捷操作 -->
+      <div class="asa-quick-actions">
+        <button class="asa-action-btn" data-action="wishlist">
+          <span>❤️</span>
+          <span>收藏</span>
+        </button>
+        <button class="asa-action-btn" data-action="alert">
+          <span>🔔</span>
+          <span>降价提醒</span>
+        </button>
+        <button class="asa-action-btn" data-action="history">
+          <span>📈</span>
+          <span>价格历史</span>
+        </button>
+        <button class="asa-action-btn" data-action="share">
+          <span>📤</span>
+          <span>分享</span>
+        </button>
+      </div>
+    `;
+    panel.appendChild(body);
+
+    // 底部
+    const footer = document.createElement('div');
+    footer.className = 'asa-panel-footer';
+    footer.innerHTML = `
+      <span class="asa-update-time">刚刚更新</span>
+      <button class="asa-refresh-btn">🔄 刷新</button>
+    `;
+    panel.appendChild(footer);
+
+    fragment.appendChild(panel);
+
+    // 最小化状态
+    const minimized = document.createElement('div');
+    minimized.className = 'asa-minimized';
+    minimized.innerHTML = `
+      <span class="asa-mini-icon">🛒</span>
+      <span class="asa-mini-price">¥${price}</span>
+    `;
+    fragment.appendChild(minimized);
+
+    return fragment;
   }
 
   // 绑定面板事件
@@ -462,7 +498,11 @@ class ShoppingAssistant {
         this.updateBestPrice(response.prices);
         this.updatePriceIndicator(response.prices);
       } else {
-        listContainer.innerHTML = '<div class="asa-error">获取价格失败</div>';
+        listContainer.textContent = '';
+        const error = document.createElement('div');
+        error.className = 'asa-error';
+        error.textContent = '获取价格失败';
+        listContainer.appendChild(error);
       }
 
       // 获取AI建议
@@ -470,40 +510,72 @@ class ShoppingAssistant {
 
     } catch (error) {
       console.error('加载比价数据失败:', error);
-      listContainer.innerHTML = '<div class="asa-error">获取价格失败，请重试</div>';
+      listContainer.textContent = '';
+      const errorEl = document.createElement('div');
+      errorEl.className = 'asa-error';
+      errorEl.textContent = '获取价格失败，请重试';
+      listContainer.appendChild(errorEl);
     }
   }
 
   // 渲染比价列表
   renderComparisonList(prices) {
     const listContainer = this.floatingPanel.querySelector('.asa-comparison-list');
+    listContainer.textContent = '';
 
     if (!prices || prices.length === 0) {
-      listContainer.innerHTML = '<div class="asa-empty">暂无其他平台价格</div>';
+      const empty = document.createElement('div');
+      empty.className = 'asa-empty';
+      empty.textContent = '暂无其他平台价格';
+      listContainer.appendChild(empty);
       return;
     }
 
     // 排序
     prices.sort((a, b) => a.price - b.price);
 
-    listContainer.innerHTML = prices.map((item, index) => `
-      <div class="asa-price-item ${index === 0 ? 'best' : ''}" data-url="${item.url}">
-        <div class="asa-platform">
-          <img src="${chrome.runtime.getURL(`assets/platforms/${item.platform.toLowerCase()}.png`)}" alt="${item.platform}">
-          <span>${item.platform}</span>
-        </div>
-        <div class="asa-price ${item.price < this.currentProduct.price ? 'lower' : item.price > this.currentProduct.price ? 'higher' : ''}">
-          ¥${item.price}
-          ${item.price < this.currentProduct.price ? `<span class="asa-save">省¥${(this.currentProduct.price - item.price).toFixed(2)}</span>` : ''}
-        </div>
-      </div>
-    `).join('');
+    prices.forEach((item, index) => {
+      const priceItem = document.createElement('div');
+      priceItem.className = `asa-price-item ${index === 0 ? 'best' : ''}`;
+      priceItem.dataset.url = item.url;
 
-    // 点击跳转
-    listContainer.querySelectorAll('.asa-price-item').forEach(item => {
-      item.addEventListener('click', () => {
-        window.open(item.dataset.url, '_blank');
+      // 平台信息
+      const platformDiv = document.createElement('div');
+      platformDiv.className = 'asa-platform';
+
+      const platformImg = document.createElement('img');
+      platformImg.src = chrome.runtime.getURL(`assets/platforms/${escapeHtml(item.platform.toLowerCase())}.png`);
+      platformImg.alt = escapeHtml(item.platform);
+      platformDiv.appendChild(platformImg);
+
+      const platformName = document.createElement('span');
+      platformName.textContent = item.platform;
+      platformDiv.appendChild(platformName);
+
+      priceItem.appendChild(platformDiv);
+
+      // 价格信息
+      const priceDiv = document.createElement('div');
+      const priceClass = item.price < this.currentProduct.price ? 'lower' :
+        item.price > this.currentProduct.price ? 'higher' : '';
+      priceDiv.className = `asa-price ${priceClass}`;
+      priceDiv.textContent = `¥${item.price}`;
+
+      if (item.price < this.currentProduct.price) {
+        const saveSpan = document.createElement('span');
+        saveSpan.className = 'asa-save';
+        saveSpan.textContent = `省¥${(this.currentProduct.price - item.price).toFixed(2)}`;
+        priceDiv.appendChild(saveSpan);
+      }
+
+      priceItem.appendChild(priceDiv);
+
+      // 点击事件
+      priceItem.addEventListener('click', () => {
+        window.open(item.url, '_blank');
       });
+
+      listContainer.appendChild(priceItem);
     });
   }
 

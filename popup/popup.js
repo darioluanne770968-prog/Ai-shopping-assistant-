@@ -8,6 +8,15 @@ import { WishlistManager } from '../modules/wishlist.js';
 import { AlertManager } from '../modules/alerts.js';
 import { StorageManager } from '../modules/storage.js';
 import { ChartManager } from '../modules/chart.js';
+import {
+  escapeHtml,
+  createProductCardHTML,
+  createPriceItemHTML,
+  createWishlistItemHTML,
+  createAlertItemHTML,
+  createCouponItemHTML,
+  createSimilarItemHTML
+} from '../modules/utils.js';
 
 class PopupApp {
   constructor() {
@@ -138,20 +147,7 @@ class PopupApp {
   // 渲染当前商品
   renderCurrentProduct() {
     const container = document.getElementById('current-product');
-    const { title, price, image, platform, url } = this.currentProduct;
-
-    container.innerHTML = `
-      <div class="product-info">
-        <img class="product-image" src="${image || 'assets/placeholder.png'}" alt="${title}">
-        <div class="product-details">
-          <div class="product-title">${title}</div>
-          <div class="product-price">
-            <span class="currency">¥</span>${price}
-          </div>
-          <span class="product-platform">${platform}</span>
-        </div>
-      </div>
-    `;
+    container.innerHTML = createProductCardHTML(this.currentProduct);
   }
 
   // 无商品时的渲染
@@ -195,15 +191,7 @@ class PopupApp {
     // 排序，最低价在前
     prices.sort((a, b) => a.price - b.price);
 
-    priceList.innerHTML = prices.map((item, index) => `
-      <div class="price-item ${index === 0 ? 'best' : ''}" data-url="${item.url}">
-        <div class="platform-info">
-          <img class="platform-logo" src="assets/platforms/${item.platform.toLowerCase()}.png" alt="${item.platform}">
-          <span class="platform-name">${item.platform}</span>
-        </div>
-        <span class="platform-price">¥${item.price}</span>
-      </div>
-    `).join('');
+    priceList.innerHTML = prices.map((item, index) => createPriceItemHTML(item, index)).join('');
 
     // 点击跳转
     priceList.querySelectorAll('.price-item').forEach(item => {
@@ -247,16 +235,7 @@ class PopupApp {
         return;
       }
 
-      couponList.innerHTML = coupons.map(coupon => `
-        <div class="coupon-item">
-          <span class="coupon-value">¥${coupon.value}</span>
-          <div class="coupon-info">
-            <div class="coupon-title">${coupon.title}</div>
-            <div class="coupon-condition">${coupon.condition}</div>
-          </div>
-          <button class="coupon-btn" data-coupon="${coupon.code}">领取</button>
-        </div>
-      `).join('');
+      couponList.innerHTML = coupons.map(coupon => createCouponItemHTML(coupon)).join('');
 
       couponList.querySelectorAll('.coupon-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -290,6 +269,7 @@ class PopupApp {
 
     try {
       const suggestion = await this.aiAnalyzer.getBuySuggestion(this.currentProduct);
+      const reason = escapeHtml(suggestion.reason);
 
       container.innerHTML = `
         <div class="suggestion-verdict">
@@ -298,7 +278,7 @@ class PopupApp {
             ${suggestion.recommend ? '推荐购买' : suggestion.neutral ? '可以考虑' : '不建议购买'}
           </span>
         </div>
-        <div class="suggestion-reason">${suggestion.reason}</div>
+        <div class="suggestion-reason">${reason}</div>
       `;
     } catch (error) {
       container.innerHTML = '<p class="error">分析失败，请重试</p>';
@@ -328,8 +308,8 @@ class PopupApp {
       const prosList = document.getElementById('pros-list');
       const consList = document.getElementById('cons-list');
 
-      prosList.innerHTML = analysis.pros.map(p => `<li>${p}</li>`).join('');
-      consList.innerHTML = analysis.cons.map(c => `<li>${c}</li>`).join('');
+      prosList.innerHTML = analysis.pros.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+      consList.innerHTML = analysis.cons.map(c => `<li>${escapeHtml(c)}</li>`).join('');
     } catch (error) {
       console.error('评论分析失败:', error);
     }
@@ -342,11 +322,11 @@ class PopupApp {
 
       document.querySelector('.trust-fill').style.width = `${shopInfo.trustScore}%`;
       document.getElementById('trust-score').textContent = `${shopInfo.trustScore}分`;
-      document.getElementById('trust-level').textContent = shopInfo.level;
+      document.getElementById('trust-level').textContent = escapeHtml(shopInfo.level);
 
       const warningsList = document.getElementById('shop-warnings');
       warningsList.innerHTML = shopInfo.warnings.map(w =>
-        `<li class="${w.type}">${w.icon} ${w.message}</li>`
+        `<li class="${escapeHtml(w.type)}">${escapeHtml(w.icon)} ${escapeHtml(w.message)}</li>`
       ).join('');
     } catch (error) {
       console.error('店铺分析失败:', error);
@@ -365,13 +345,7 @@ class PopupApp {
         return;
       }
 
-      container.innerHTML = similar.map(item => `
-        <div class="similar-item" data-url="${item.url}">
-          <img class="similar-image" src="${item.image}" alt="${item.title}">
-          <div class="similar-title">${item.title}</div>
-          <div class="similar-price">¥${item.price}</div>
-        </div>
-      `).join('');
+      container.innerHTML = similar.map(item => createSimilarItemHTML(item)).join('');
 
       container.querySelectorAll('.similar-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -402,23 +376,7 @@ class PopupApp {
       return;
     }
 
-    container.innerHTML = wishlist.map(item => `
-      <div class="wishlist-item" data-id="${item.id}">
-        <img class="wishlist-item-image" src="${item.image}" alt="${item.title}">
-        <div class="wishlist-item-info">
-          <div class="wishlist-item-title">${item.title}</div>
-          <div class="wishlist-item-price">
-            <span class="current-price">¥${item.currentPrice}</span>
-            ${item.originalPrice ? `<span class="original-price">¥${item.originalPrice}</span>` : ''}
-            ${item.priceChange ? `<span class="price-change ${item.priceChange > 0 ? 'up' : 'down'}">${item.priceChange > 0 ? '↑' : '↓'}${Math.abs(item.priceChange)}%</span>` : ''}
-          </div>
-        </div>
-        <div class="wishlist-item-actions">
-          <button class="view-btn" data-url="${item.url}">查看</button>
-          <button class="remove-btn" data-id="${item.id}">删除</button>
-        </div>
-      </div>
-    `).join('');
+    container.innerHTML = wishlist.map(item => createWishlistItemHTML(item)).join('');
 
     // 绑定事件
     container.querySelectorAll('.view-btn').forEach(btn => {
@@ -461,19 +419,7 @@ class PopupApp {
       return;
     }
 
-    container.innerHTML = alerts.map(alert => `
-      <div class="alert-item" data-id="${alert.id}">
-        <img class="alert-item-image" src="${alert.image}" alt="${alert.title}">
-        <div class="alert-item-info">
-          <div class="alert-item-title">${alert.title}</div>
-          <div class="alert-prices">
-            <span class="current">当前: ¥${alert.currentPrice}</span>
-            <span class="target">目标: ¥${alert.targetPrice}</span>
-          </div>
-        </div>
-        <button class="alert-item-delete" data-id="${alert.id}">🗑️</button>
-      </div>
-    `).join('');
+    container.innerHTML = alerts.map(alert => createAlertItemHTML(alert)).join('');
 
     container.querySelectorAll('.alert-item-delete').forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -609,13 +555,7 @@ class PopupApp {
   renderImageSearchResults(results) {
     const container = document.getElementById('similar-list');
 
-    container.innerHTML = results.map(item => `
-      <div class="similar-item" data-url="${item.url}">
-        <img class="similar-image" src="${item.image}" alt="${item.title}">
-        <div class="similar-title">${item.title}</div>
-        <div class="similar-price">¥${item.price}</div>
-      </div>
-    `).join('');
+    container.innerHTML = results.map(item => createSimilarItemHTML(item)).join('');
 
     container.querySelectorAll('.similar-item').forEach(item => {
       item.addEventListener('click', () => {
